@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sweet Delights Bakery</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            transition: background-color 0.3s, color 0.3s;
+            color: var(--bs-body-color);
+            background-color: var(--bs-body-bg);
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                        url('https://images.unsplash.com/photo-1523294587484-bae6cc870010');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            color: white;
+        }
+
+        .navbar {
+            background-color: var(--bs-body-bg) !important;
+        }
+
+        .navbar-light .navbar-nav .nav-link {
+            color: var(--bs-body-color);
+        }
+
+        .card {
+            background-color: var(--bs-body-bg);
+            color: var(--bs-body-color);
+            border-color: var(--bs-border-color);
+        }
+
+        .bg-light {
+            background-color: var(--bs-tertiary-bg) !important;
+        }
+
+        .text-muted {
+            color: var(--bs-secondary-color) !important;
+        }
+
+        .product-card {
+            transition: transform 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .section-padding {
+            padding: 5rem 0;
+        }
+
+        .product-img {
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .about-img {
+            height: 400px;
+            object-fit: cover;
+        }
+
+        .staff-img {
+            height: 300px;
+            object-fit: cover;
+        }
+
+        [data-bs-theme="dark"] {
+            --bs-body-color: #f8f9fa;
+            --bs-body-bg: #212529;
+            --bs-tertiary-bg: #343a40;
+            --bs-secondary-color: #adb5bd;
+            --bs-border-color: #495057;
+        }
+
+        [data-bs-theme="light"] {
+            --bs-body-color: #212529;
+            --bs-body-bg: #ffffff;
+            --bs-tertiary-bg: #f8f9fa;
+            --bs-secondary-color: #6c757d;
+            --bs-border-color: #dee2e6;
+        }
+
+        .section-transition {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .section-transition.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .success-alert {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-cookie-bite"></i> Sweet Delights</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home"><i class="fas fa-home"></i> Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about"><i class="fas fa-book"></i> About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#menu"><i class="fas fa-cake"></i> Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#order"><i class="fas fa-shopping-cart"></i> Order</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact"><i class="fas fa-phone"></i> Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-link nav-link" id="darkModeToggle">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-1 mb-4">Sweet Delights Bakery</h1>
+            <p class="lead mb-4">Artisanal breads and pastries baked fresh daily</p>
+            <a href="#menu" class="btn btn-lg btn-primary">View Our Menu</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section-padding section-transition">
+        <div class="container">
+            <h2 class="text-center mb-5">About Us</h2>
+            <div class="row align-items-center">
+                <div class="col-md-6 mb-4">
+                    <img src="https://images.unsplash.com/photo-1615497419017-50b4adab1b8c" alt="Bakery Interior" class="img-fluid rounded about-img">
+                </div>
+                <div class="col-md-6">
+                    <h3>Our Story</h3>
+                    <p>Founded in 2010, Sweet Delights Bakery has been serving the community with fresh, handcrafted baked goods made from traditional recipes passed down through generations.</p>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <img src="https://images.unsplash.com/photo-1653941551184-5e63288ab8e8" alt="Baker" class="img-fluid rounded staff-img mb-3">
+                        </div>
+                        <div class="col-md-6">
+                            <img src="https://images.unsplash.com/photo-1442364635094-83a07d3f464f" alt="Staff" class="img-fluid rounded staff-img">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="section-padding bg-light section-transition">
+        <div class="container">
+            <h2 class="text-center mb-5">Our Menu</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card product-card">
+                        <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a" class="card-img-top product-img" alt="Croissants">
+                        <div class="card-body">
+                            <h5 class="card-title">Croissants</h5>
+                            <p class="card-text">Buttery, flaky croissants baked to golden perfection</p>
+                            <p class="card-text"><small class="text-muted">$3.50</small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card product-card">
+                        <img src="https://images.unsplash.com/photo-1608198093002-ad4e005484ec" class="card-img-top product-img" alt="Sourdough Bread">
+                        <div class="card-body">
+                            <h5 class="card-title">Sourdough Bread</h5>
+                            <p class="card-text">Artisanal sourdough bread with perfect crust</p>
+                            <p class="card-text"><small class="text-muted">$6.00</small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card product-card">
+                        <img src="https://images.unsplash.com/photo-1517686469429-8bdb88b9f907" class="card-img-top product-img" alt="Pastries">
+                        <div class="card-body">
+                            <h5 class="card-title">Mixed Pastries</h5>
+                            <p class="card-text">Selection of fresh daily pastries</p>
+                            <p class="card-text"><small class="text-muted">$4.50</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Alert Messages -->
+    <div id="orderSuccessAlert" class="alert alert-success success-alert" role="alert">
+        <i class="fas fa-check-circle"></i> Thanks for placing your order! We'll contact you soon.
+    </div>
+    <div id="contactSuccessAlert" class="alert alert-success success-alert" role="alert">
+        <i class="fas fa-check-circle"></i> Thanks for your message! We'll get back to you shortly.
+    </div>
+
+    <!-- Order Section -->
+    <section id="order" class="section-padding section-transition">
+        <div class="container">
+            <h2 class="text-center mb-5">Place Your Order</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <form id="orderForm" class="needs-validation" novalidate>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="items" class="form-label">Items</label>
+                            <textarea class="form-control" id="items" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="pickup-date" class="form-label">Pickup Date</label>
+                            <input type="date" class="form-control" id="pickup-date" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Order</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section-padding bg-light section-transition">
+        <div class="container">
+            <h2 class="text-center mb-5">Contact Us</h2>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <h4><i class="fas fa-map-marker-alt"></i> Location</h4>
+                    <p>123 Bakery Street<br>Sweet Town, ST 12345</p>
+
+                    <h4><i class="fas fa-clock"></i> Hours</h4>
+                    <p>Monday - Saturday: 7:00 AM - 7:00 PM<br>Sunday: 8:00 AM - 3:00 PM</p>
+
+                    <h4><i class="fas fa-phone"></i> Phone</h4>
+                    <p>(555) 123-4567</p>
+                </div>
+                <div class="col-md-6">
+                    <form id="contactForm" class="needs-validation" novalidate>
+                        <div class="mb-3">
+                            <label for="contactName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="contactName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contactEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="contactEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message</label>
+                            <textarea class="form-control" id="message" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4">
+        <div class="container text-center">
+            <p>&copy; 2023 Sweet Delights Bakery. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#" class="text-light me-3"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="text-light me-3"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-light"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const htmlElement = document.documentElement;
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        htmlElement.setAttribute('data-bs-theme', savedTheme);
+        darkModeToggle.innerHTML = savedTheme === 'dark' ? 
+            '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+
+        darkModeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-bs-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            htmlElement.setAttribute('data-bs-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            darkModeToggle.innerHTML = newTheme === 'dark' ? 
+                '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+
+        // Form validation and submission
+        const forms = document.querySelectorAll('.needs-validation');
+        forms.forEach(form => {
+            form.addEventListener('submit', event => {
+                event.preventDefault();
+                if (!form.checkValidity()) {
+                    event.stopPropagation();
+                    form.classList.add('was-validated');
+                    return;
+                }
+
+                // Show success message based on form ID
+                if (form.id === 'orderForm') {
+                    showAlert('orderSuccessAlert');
+                    form.reset();
+                } else if (form.id === 'contactForm') {
+                    showAlert('contactSuccessAlert');
+                    form.reset();
+                }
+
+                form.classList.remove('was-validated');
+            });
+        });
+
+        // Function to show and hide alerts
+        function showAlert(alertId) {
+            const alert = document.getElementById(alertId);
+            alert.style.display = 'block';
+
+            // Hide alert after 5 seconds
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        // Section transitions
+        const sections = document.querySelectorAll('.section-transition');
+        const observerOptions = {
+            threshold: 0.2
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
