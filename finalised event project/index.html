@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EventHub - Book Amazing Events</title>
+  <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <style>
+    .hero {
+      background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                  url('https://images.unsplash.com/photo-1455849318743-b2233052fcff');
+      background-size: cover;
+      background-position: center;
+      min-height: 60vh;
+      color: white;
+    }
+
+    .event-card {
+      transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      height: 100%;
+      border: 2px solid rgba(0, 0, 0, 0.2);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+      background: #ffffff;
+    }
+
+    .event-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+      border-color: rgba(0, 0, 0, 0.3);
+    }
+
+    .event-card .card-img-wrapper {
+      position: relative;
+      height: 280px;
+      background: #f8f9fa;
+      border-bottom: 3px solid rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+    }
+
+    .event-card .card-img-top {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform 0.3s ease;
+    }
+
+    .event-card:hover .card-img-top {
+      transform: scale(1.05);
+    }
+
+    .event-card .card-body {
+      padding: 2rem;
+      background: #ffffff;
+    }
+
+    /* Set event title color to black */
+    .event-card .card-title {
+      color: black;
+    }
+
+    /* Set category text color to black */
+    .event-card .card-img-overlay h6 {
+      color: black !important;
+    }
+
+    /* Set date, location, and time text color to black */
+    .event-card .card-text {
+      color: black;
+    }
+
+    .modal .modal-body img {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 15px;
+      margin-bottom: 2rem;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      border: 2px solid rgba(0, 0, 0, 0.1);
+      background: #f8f9fa;
+    }
+
+    .event-card .card-img-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+      padding: 20px;
+      color: white;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .event-card:hover .card-img-overlay {
+      opacity: 1;
+    }
+    
+    .testimonial-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #ffffff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .countdown-timer {
+      background: rgba(0, 0, 0, 0.05);
+      padding: 15px;
+      border-radius: 10px;
+      margin: 15px 0;
+      text-align: center;
+      font-size: 0.95rem;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .countdown-timer span {
+      font-weight: bold;
+      margin: 0 5px;
+      padding: 6px 12px;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 6px;
+      display: inline-block;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="#"><i class="fas fa-calendar-alt me-2"></i>EventHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#events">Events</a></li>
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" id="viewBookings">My Bookings</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero d-flex align-items-center">
+    <div class="container text-center">
+      <h1 class="display-4 fw-bold mb-4">Discover Amazing Events</h1>
+      <p class="lead mb-4">Book tickets for the most exciting events in your city</p>
+      <a href="#events" class="btn btn-primary btn-lg">Explore Events</a>
+    </div>
+  </section>
+
+  <!-- Events Section -->
+  <section id="events" class="py-5">
+    <div class="container">
+      <h2 class="text-center mb-5">Upcoming Events</h2>
+
+      <!-- Search and Filter Form -->
+      <form id="searchForm" class="mb-4">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <input type="text" class="form-control" id="searchInput" placeholder="Search events..." />
+          </div>
+          <div class="col-md-3">
+            <select class="form-select" id="categoryFilter">
+              <option value="">All Categories</option>
+              <option value="music">Music</option>
+              <option value="tech">Technology</option>
+              <option value="food">Food & Drinks</option>
+              <option value="art">Art & Culture</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <input type="date" class="form-control" id="dateFilter" />
+          </div>
+          <div class="col-md-2">
+            <button type="reset" class="btn btn-secondary w-100">Reset</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="row g-4" id="eventsList">
+        <!-- Events will be populated by JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="py-5 bg-dark">
+    <div class="container">
+      <h2 class="text-center mb-5">What People Say</h2>
+      <div class="row g-4" id="testimonialsList">
+        <!-- Testimonials will be populated by JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="py-5">
+    <div class="container">
+      <h2 class="text-center mb-5">About Us</h2>
+      <div class="row mb-5">
+        <div class="col-md-8 mx-auto">
+          <div class="card mb-5">
+            <div class="card-body text-center">
+              <h3 class="card-title mb-4">Welcome to EventHub</h3>
+              <p class="lead">
+                Your premier destination for discovering and booking amazing events in your city.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="about-feature">
+            <i class="fas fa-calendar-check about-icon"></i>
+            <h4>Easy Booking</h4>
+            <p>Book your favorite events with just a few clicks. Simple, fast, and secure.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="about-feature">
+            <i class="fas fa-ticket-alt about-icon"></i>
+            <h4>Diverse Events</h4>
+            <p>From music festivals to tech conferences, find events that match your interests.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="about-feature">
+            <i class="fas fa-users about-icon"></i>
+            <h4>Community</h4>
+            <p>Join a vibrant community of event organizers and enthusiasts.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-5">
+    <div class="container">
+      <h2 class="text-center mb-5">Contact Us</h2>
+      <div class="row justify-content-center">
+        <div class="col-md-8">
+          <div class="alert alert-success d-none" id="contactSuccess">
+            We'll contact you soon.
+          </div>
+          <form id="contactForm" class="needs-validation" novalidate>
+            <div class="mb-3">
+              <input type="text" class="form-control" placeholder="Your Name" required />
+              <div class="invalid-feedback">Please enter your name</div>
+            </div>
+            <div class="mb-3">
+              <input type="email" class="form-control" placeholder="Your Email" required />
+              <div class="invalid-feedback">Please enter a valid email</div>
+            </div>
+            <div class="mb-3">
+              <textarea class="form-control" rows="5" placeholder="Your Message" required></textarea>
+              <div class="invalid-feedback">Please enter your message</div>
+            </div>
+            <button type="submit" class="btn btn-primary">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-dark py-4">
+    <div class="container">
+      <div class="row gy-4">
+        <div class="col-md-4">
+          <h5>EventHub</h5>
+          <p class="text-muted">Making event booking simple and enjoyable.</p>
+        </div>
+        <div class="col-md-4">
+          <h5>Quick Links</h5>
+          <ul class="list-unstyled">
+            <li><a href="#home" class="text-muted">Home</a></li>
+            <li><a href="#events" class="text-muted">Events</a></li>
+            <li><a href="#about" class="text-muted">About</a></li>
+            <li><a href="#contact" class="text-muted">Contact</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h5>Follow Us</h5>
+          <div class="social-links">
+            <a href="#" class="text-muted me-2"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="text-muted me-2"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-muted me-2"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="text-muted"><i class="fab fa-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+      <hr class="my-4" />
+      <div class="text-center text-muted">
+        <small>&copy; 2024 EventHub. All rights reserved.</small>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Event Details Modal -->
+  <div class="modal fade" id="eventModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Event Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="eventModalContent">
+          <!-- Event details will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div class="modal fade" id="loginModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Login</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="loginForm" class="needs-validation" novalidate>
+            <div class="mb-3">
+              <input type="email" class="form-control" placeholder="Email" required />
+              <div class="invalid-feedback">Please enter your email</div>
+            </div>
+            <div class="mb-3">
+              <input type="password" class="form-control" placeholder="Password" required />
+              <div class="invalid-feedback">Please enter your password</div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Enhanced Event Data with categories
+    const events = [
+      {
+        id: 1,
+        title: "Summer Music Festival",
+        category: "music",
+        date: "2024-07-15",
+        time: "16:00",
+        location: "Central Park",
+        image: "https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a",
+        price: 49.99,
+        description: "Join us for an unforgettable evening of live music under the stars."
+      },
+      {
+        id: 2,
+        title: "Tech Conference 2024",
+        category: "tech",
+        date: "2024-08-20",
+        time: "09:00",
+        location: "Convention Center",
+        image: "https://images.unsplash.com/photo-1541445976433-f466f228a409?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        price: 299.99,
+        description: "Learn from industry experts about the latest technology trends."
+      },
+      {
+        id: 3,
+        title: "Food & Wine Festival",
+        category: "food",
+        date: "2024-09-10",
+        time: "12:00",
+        location: "Riverside Gardens",
+        image: "https://images.unsplash.com/photo-1550177977-ad69e8f3cae0",
+        price: 75.00,
+        description: "Taste exceptional cuisines and wines from around the world."
+      },
+      {
+        id: 4,
+        title: "Art Exhibition",
+        category: "art",
+        date: "2024-10-05",
+        time: "10:00",
+        location: "Modern Art Gallery",
+        image: "https://images.unsplash.com/photo-1611692934809-5560cb58ad6b",
+        price: 25.00,
+        description: "Experience contemporary art from emerging artists."
+      }
+    ];
+
+    // Filter events based on search criteria
+    function filterEvents() {
+      const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+      const category = document.getElementById("categoryFilter").value;
+      const date = document.getElementById("dateFilter").value;
+
+      return events.filter(event => {
+        const matchesSearch =
+          event.title.toLowerCase().includes(searchTerm) ||
+          event.description.toLowerCase().includes(searchTerm) ||
+          event.location.toLowerCase().includes(searchTerm);
+        const matchesCategory = !category || event.category === category;
+        const matchesDate = !date || event.date === date;
+
+        return matchesSearch && matchesCategory && matchesDate;
+      });
+    }
+
+    // Display filtered events
+    function displayEvents() {
+      const filteredEvents = filterEvents();
+      const eventsList = document.getElementById("eventsList");
+
+      eventsList.innerHTML = filteredEvents
+        .map(
+          event => `
+          <div class="col-md-6 col-lg-3">
+            <div class="card event-card h-100">
+              <div class="card-img-wrapper">
+                <img src="${event.image}" class="card-img-top" alt="${event.title}">
+                <div class="card-img-overlay">
+                  <h6 class="mb-0">${event.category.toUpperCase()}</h6>
+                </div>
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">${event.title}</h5>
+                <div class="countdown-timer" data-date="${event.date} ${event.time}">
+                  Loading countdown...
+                </div>
+                <p class="card-text">
+                  <i class="fas fa-calendar-alt me-2"></i>${event.date}<br>
+                  <i class="fas fa-map-marker-alt me-2"></i>${event.location}<br>
+                  <i class="fas fa-ticket-alt me-2"></i>$${event.price}
+                </p>
+                <button class="btn btn-primary w-100" onclick="showEventDetails(${event.id})">
+                  Book Now
+                </button>
+              </div>
+            </div>
+          </div>
+        `
+        )
+        .join("");
+
+      // Initialize countdown timers
+      updateCountdowns();
+    }
+
+    // Update countdown timers
+    function updateCountdowns() {
+      document.querySelectorAll(".countdown-timer").forEach(timer => {
+        const eventDate = new Date(timer.dataset.date).getTime();
+
+        const updateTimer = () => {
+          const now = new Date().getTime();
+          const distance = eventDate - now;
+
+          if (distance < 0) {
+            timer.innerHTML = '<span class="text-danger">Event has ended</span>';
+            return;
+          }
+
+          const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+          timer.innerHTML = `
+            <span>${days}d</span>
+            <span>${hours}h</span>
+            <span>${minutes}m</span>
+          `;
+        };
+
+        updateTimer();
+        setInterval(updateTimer, 60000);
+      });
+    }
+
+    // Show Event Details and Booking Form
+    function showEventDetails(eventId) {
+      const event = events.find(e => e.id === eventId);
+      const modalContent = document.getElementById("eventModalContent");
+      modalContent.innerHTML = `
+        <div class="row">
+          <div class="col-md-6">
+            <img src="${event.image}" class="img-fluid rounded" alt="${event.title}">
+            <div class="countdown-timer mt-3" data-date="${event.date} ${event.time}">
+              Loading countdown...
+            </div>
+          </div>
+          <div class="col-md-6">
+            <h4>${event.title}</h4>
+            <p>${event.description}</p>
+            <p><i class="fas fa-calendar-alt me-2"></i>${event.date} at ${event.time}</p>
+            <p><i class="fas fa-map-marker-alt me-2"></i>${event.location}</p>
+            <p><i class="fas fa-ticket-alt me-2"></i>$${event.price}</p>
+            <form id="bookingForm" class="needs-validation" novalidate>
+              <input type="hidden" name="eventId" value="${event.id}">
+              <div class="mb-3">
+                <input type="text" class="form-control" name="fullName" placeholder="Full Name" required>
+                <div class="invalid-feedback">Please enter your name</div>
+              </div>
+              <div class="mb-3">
+                <input type="email" class="form-control" name="email" placeholder="Email" required>
+                <div class="invalid-feedback">Please enter a valid email</div>
+              </div>
+              <div class="mb-3">
+                <input type="number" class="form-control" name="tickets" placeholder="Number of Tickets" required min="1">
+                <div class="invalid-feedback">Please enter the number of tickets</div>
+              </div>
+              <button type="submit" class="btn btn-primary">Book Now</button>
+            </form>
+          </div>
+        </div>
+      `;
+      new bootstrap.Modal(document.getElementById("eventModal")).show();
+      updateCountdowns();
+    }
+
+    // Handle Booking Form Submission
+    function handleBookingSubmission(form) {
+      const formData = new FormData(form);
+      const bookingData = {
+        eventId: formData.get("eventId"),
+        fullName: formData.get("fullName"),
+        email: formData.get("email"),
+        tickets: formData.get("tickets"),
+        timestamp: new Date().toISOString()
+      };
+
+      let userBookings = JSON.parse(localStorage.getItem("userBookings") || "[]");
+      userBookings.push(bookingData);
+      localStorage.setItem("userBookings", JSON.stringify(userBookings));
+
+      const modalBody = form.closest(".modal-body");
+      modalBody.innerHTML = `
+        <div class="text-center py-4">
+          <i class="fas fa-check-circle text-success display-1 mb-4"></i>
+          <h4>Thank You!</h4>
+          <p>Your booking has been confirmed. We'll send you the details via email.</p>
+        </div>
+      `;
+
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+
+      setTimeout(() => {
+        const modal = bootstrap.Modal.getInstance(document.getElementById("eventModal"));
+        modal.hide();
+      }, 3000);
+    }
+
+    // Show User Bookings
+    function showUserBookings() {
+      const userBookings = JSON.parse(localStorage.getItem("userBookings") || "[]");
+      const modalContent = document.getElementById("eventModalContent");
+
+      if (userBookings.length === 0) {
+        modalContent.innerHTML = `
+          <div class="text-center py-4">
+            <i class="fas fa-ticket-alt text-muted display-1 mb-4"></i>
+            <h4>No Bookings Found</h4>
+            <p>You haven't made any bookings yet.</p>
+          </div>
+        `;
+      } else {
+        modalContent.innerHTML = `
+          <h4 class="mb-4">Your Bookings</h4>
+          <div class="list-group">
+            ${userBookings
+              .map(booking => {
+                const event = events.find(e => e.id === parseInt(booking.eventId));
+                return `
+                <div class="list-group-item">
+                  <h5 class="mb-1">${event.title}</h5>
+                  <p class="mb-1">
+                    <small>
+                      <i class="fas fa-user me-2"></i>${booking.fullName}<br>
+                      <i class="fas fa-ticket-alt me-2"></i>${booking.tickets} tickets<br>
+                      <i class="fas fa-calendar-alt me-2"></i>${event.date} at ${event.time}
+                    </small>
+                  </p>
+                </div>
+              `;
+              })
+              .join("")}
+          </div>
+        `;
+      }
+      new bootstrap.Modal(document.getElementById("eventModal")).show();
+    }
+
+    // Populate Testimonials
+    function displayTestimonials() {
+      const testimonialsList = document.getElementById("testimonialsList");
+      const testimonials = [
+        {
+          name: "Sarah Johnson",
+          role: "Event Organizer",
+          image: "https://images.unsplash.com/photo-1708860028064-3303a016e88f",
+          text: "EventHub made organizing our conference a breeze. Highly recommended!"
+        },
+        {
+          name: "Michael Chen",
+          role: "Regular Attendee",
+          image: "https://images.unsplash.com/photo-1708860028233-10da73ede2a0",
+          text: "I've booked multiple events through EventHub. Always a smooth experience."
+        },
+        {
+          name: "Emily Davis",
+          role: "Corporate Client",
+          image: "https://images.unsplash.com/photo-1711980012199-2697edfc8794",
+          text: "The best platform for managing corporate event bookings."
+        }
+      ];
+      testimonialsList.innerHTML = testimonials
+        .map(
+          testimonial => `
+          <div class="col-md-4">
+            <div class="card h-100">
+              <div class="card-body text-center">
+                <img src="${testimonial.image}" class="testimonial-avatar mb-3" alt="${testimonial.name}">
+                <h5 class="card-title">${testimonial.name}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">${testimonial.role}</h6>
+                <p class="card-text">${testimonial.text}</p>
+              </div>
+            </div>
+          </div>
+        `
+        )
+        .join("");
+    }
+
+    // Initialize
+    document.addEventListener("DOMContentLoaded", () => {
+      displayEvents();
+      displayTestimonials();
+
+      document.getElementById("searchForm").addEventListener("input", displayEvents);
+      document.getElementById("searchForm").addEventListener("reset", () => {
+        setTimeout(displayEvents, 0);
+      });
+
+      document.addEventListener("submit", function(event) {
+        event.preventDefault();
+        const form = event.target;
+
+        if (!form.checkValidity()) {
+          event.stopPropagation();
+          form.classList.add("was-validated");
+        } else if (form.id === "bookingForm") {
+          handleBookingSubmission(form);
+        } else if (form.id === "contactForm") {
+          form.classList.remove("was-validated");
+          form.classList.add("form-success");
+          document.getElementById("contactSuccess").classList.remove("d-none");
+          form.reset();
+
+          setTimeout(() => {
+            document.getElementById("contactSuccess").classList.add("d-none");
+            form.classList.remove("form-success");
+          }, 3000);
+        }
+      });
+
+      document.getElementById("viewBookings").addEventListener("click", showUserBookings);
+
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({
+              behavior: "smooth"
+            });
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
